@@ -65,7 +65,8 @@ RUN php -m | grep xdebug
 # =========================
 # CONFIGS
 # =========================
-COPY ./xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+# COPY ./xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+COPY ./xdebug.ini /usr/local/etc/php/conf.d/99-xdebug.ini
 COPY ./dev.ini /usr/local/etc/php/conf.d/prod.ini
 COPY ./fpm.conf /usr/local/etc/php-fpm.d/x.fpm.conf
 
