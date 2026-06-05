@@ -62,11 +62,11 @@ RUN apk del .build-deps
 # =========================
 RUN php -m | grep xdebug
 
-RUN apk add --no-cache gettext
-
 # =========================
 # CONFIGS
 # =========================
+RUN apk add --no-cache gettext
+
 RUN mkdir -p /usr/local/etc/php/conf.d \
     && chown -R 1000:1000 /usr/local/etc/php/conf.d
 

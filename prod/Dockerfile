@@ -145,6 +145,8 @@ RUN set -eux; \
         | tar xvz -C "/usr/src/php/ext/amqp" --strip 1; \
     docker-php-ext-install amqp
 
+RUN apk add --no-cache rabbitmq-c
+
 # =========================
 # XSL
 # =========================
@@ -159,6 +161,14 @@ RUN apk del .build-deps
 # =========================
 # Configs
 # =========================
+RUN apk add --no-cache gettext
+
+RUN mkdir -p /usr/local/etc/php/conf.d \
+    && chown -R 1000:1000 /usr/local/etc/php/conf.d
+
+RUN mkdir -p /usr/local/etc/php-fpm.d \
+    && chown -R 1000:1000 /usr/local/etc/php-fpm.d
+
 COPY ./php-fpm.conf /usr/local/etc/php-fpm.d/www.conf.template
 COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini.template
 COPY ./prod.ini /usr/local/etc/php/conf.d/prod.ini.template
