@@ -159,8 +159,14 @@ RUN apk del .build-deps
 # =========================
 # Configs
 # =========================
-COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini
-COPY ./prod.ini /usr/local/etc/php/conf.d/prod.ini
-COPY ./fpm.conf /usr/local/etc/php-fpm.d/x.fpm.conf
+COPY ./php-fpm.conf /usr/local/etc/php-fpm.d/www.conf.template
+COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini.template
+COPY ./prod.ini /usr/local/etc/php/conf.d/prod.ini.template
 
 WORKDIR /app
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["php-fpm"]

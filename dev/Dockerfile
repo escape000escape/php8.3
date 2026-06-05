@@ -62,15 +62,29 @@ RUN apk del .build-deps
 # =========================
 RUN php -m | grep xdebug
 
+RUN apk add --no-cache gettext
+
 # =========================
 # CONFIGS
 # =========================
-# COPY ./xdebug.ini /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-COPY ./xdebug.ini /usr/local/etc/php/conf.d/99-xdebug.ini
-COPY ./dev.ini /usr/local/etc/php/conf.d/prod.ini
-COPY ./fpm.conf /usr/local/etc/php-fpm.d/x.fpm.conf
+RUN mkdir -p /usr/local/etc/php/conf.d \
+    && chown -R 1000:1000 /usr/local/etc/php/conf.d
+
+RUN mkdir -p /usr/local/etc/php-fpm.d \
+    && chown -R 1000:1000 /usr/local/etc/php-fpm.d
+    
+COPY ./dev.ini /usr/local/etc/php/conf.d/dev.ini.template
+COPY ./php-fpm.conf /usr/local/etc/php-fpm.d/www.conf.template
+COPY ./xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini.template
+COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini.template
 
 # =========================
 # WORKDIR
 # =========================
 WORKDIR /app
+
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["php-fpm"]
