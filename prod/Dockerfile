@@ -164,10 +164,10 @@ RUN apk del .build-deps
 RUN apk add --no-cache gettext
 
 RUN mkdir -p /usr/local/etc/php/conf.d \
-    && chown -R 1000:1000 /usr/local/etc/php/conf.d
+    && chown -R www-data:www-data /usr/local/etc/php/conf.d
 
 RUN mkdir -p /usr/local/etc/php-fpm.d \
-    && chown -R 1000:1000 /usr/local/etc/php-fpm.d
+    && chown -R www-data:www-data /usr/local/etc/php-fpm.d
 
 COPY ./php-fpm.conf /usr/local/etc/php-fpm.d/www.conf.template
 COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini.template
