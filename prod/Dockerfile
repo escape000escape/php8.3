@@ -1,5 +1,8 @@
 FROM escape000escape/php8.3-base
 
+#ARG UID=33
+#ARG GID=33
+
 # =========================
 # PHP-FPM
 # =========================
@@ -163,11 +166,22 @@ RUN apk del .build-deps
 # =========================
 RUN apk add --no-cache gettext
 
-RUN mkdir -p /usr/local/etc/php/conf.d \
-    && chown -R www-data:www-data /usr/local/etc/php/conf.d
 
-RUN mkdir -p /usr/local/etc/php-fpm.d \
-    && chown -R www-data:www-data /usr/local/etc/php-fpm.d
+
+
+# створюєш правильні права
+RUN mkdir -p /usr/local/etc/php/conf.d \
+    && mkdir -p /usr/local/etc/php-fpm.d \
+    && chown -R www-data:www-data /usr/local/etc/php*
+
+# працюєш як www-data
+USER www-data
+
+# RUN mkdir -p /usr/local/etc/php/conf.d \
+#    && chown -R ${UID}:${GID} /usr/local/etc/php/conf.d
+
+# RUN mkdir -p /usr/local/etc/php-fpm.d \
+#    && chown -R ${UID}:${GID} /usr/local/etc/php-fpm.d
 
 COPY ./php-fpm.conf /usr/local/etc/php-fpm.d/www.conf.template
 COPY ./opcache.ini /usr/local/etc/php/conf.d/opcache.ini.template
@@ -175,8 +189,10 @@ COPY ./prod.ini /usr/local/etc/php/conf.d/prod.ini.template
 
 WORKDIR /app
 
-COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
-RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+#COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+#RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+COPY --chmod=755 docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["php-fpm"]
